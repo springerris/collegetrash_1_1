@@ -2,10 +2,11 @@ package com.github.springerris;
 
 import java.util.ArrayList;
 
-public class Kaf_record_storage {
-    public static ArrayList<kaf_record> list = new ArrayList<kaf_record>();
+public class KafRecordFormatter {
 
-    public static void empt(int cnt) {
+    public static ArrayList<KafRecord> list = new ArrayList<>();
+
+    public static void empty(int cnt) {
         if (cnt > 0) {
             for (int i = 0; i < cnt; i++) {
                 System.out.print(" ");
@@ -13,29 +14,30 @@ public class Kaf_record_storage {
         }
     }
 
-    public static void get_records() {
+    public static void getRecords() {
         list.clear();
-        list = DB.get_records();
+        list = DB.getRecords();
     }
 
-    public static void show_records() {
+    public static void showRecords() {
     System.out.println("╔════╦══════════════════════════════╦════════════════╗");
     System.out.println("| ID | Название кафедры             | Номер телефона |");
     System.out.println("╚════╩══════════════════════════════╩════════════════╝");
     String str = "";
-        for (kaf_record kafRecord : list) {
-            String lenst = String.valueOf(kafRecord.id);
+        for (KafRecord kafRecord : list) {
+            String lenst = String.valueOf(kafRecord.id());
             str = "| " + lenst;
             System.out.print(str);
-            empt(3 - lenst.length());
-            str = "| " + kafRecord.naz;
+            empty(3 - lenst.length());
+            str = "| " + kafRecord.naz();
             System.out.print(str);
-            empt(29 - kafRecord.naz.length());
-            str = "| " + kafRecord.tel;
+            empty(29 - kafRecord.naz().length());
+            str = "| " + kafRecord.tel();
             System.out.print(str);
-            empt(15 - kafRecord.tel.length());
+            empty(15 - kafRecord.tel().length());
             System.out.println("|");
             System.out.println("╚════╩══════════════════════════════╩════════════════╝");
         }
     }
+
 }

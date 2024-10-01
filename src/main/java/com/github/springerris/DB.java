@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class DB {
+
     private static String url = "jdbc:mysql://localhost/lab1_jdbc";
-    // you said to remove these so idk, they're in the CSV file if you need them. url too just in case
     private static String pwd = "";
     private static String usr = "";
 
-    public static ArrayList<kaf_record> get_records() {
-        ArrayList<kaf_record> templist = new ArrayList<kaf_record>();
+    public static ArrayList<KafRecord> getRecords() {
+        ArrayList<KafRecord> templist = new ArrayList<KafRecord>();
         try (Connection conn = DriverManager.getConnection(url,usr,pwd)) {
             Statement statement = conn.createStatement();
             String sql = String.format("SELECT id, naz, tel FROM kaf_records");
@@ -26,7 +26,7 @@ public class DB {
                 int id = rs.getInt("id");
                 String tel = rs.getString("tel") ;
                 String naz = rs.getString("naz");
-                templist.add(new kaf_record(id,naz,tel));
+                templist.add(new KafRecord(id,naz,tel));
             }
 
 
@@ -39,7 +39,7 @@ public class DB {
         return templist;
     }
 
-    public static void add_to_record() {
+    public static void addToRecord() {
         Scanner input = new Scanner(System.in);
         System.out.println("Введите название кафедры");
         String str1 = input.next();
@@ -55,7 +55,7 @@ public class DB {
             Statement statement = conn.createStatement();
             String sql = String.format("INSERT INTO kaf_records(naz, tel) VALUES('%s', '%s')",str1,str2);
             statement.executeUpdate(sql);
-            Kaf_record_storage.get_records();
+            KafRecordFormatter.getRecords();
         }
 
 
@@ -66,7 +66,7 @@ public class DB {
 
     }
 
-    public static void update_record(int id) {
+    public static void updateRecord(int id) {
         Scanner input = new Scanner(System.in);
         System.out.println("Введите название кафедры");
         String str1 = input.next();
@@ -82,7 +82,7 @@ public class DB {
             Statement statement = conn.createStatement();
             String sql = String.format("UPDATE kaf_records SET naz = '%s', tel = '%s' WHERE id = %d",str1,str2,id);
             statement.executeUpdate(sql);
-            Kaf_record_storage.get_records();
+            KafRecordFormatter.getRecords();
         }
 
 
@@ -94,13 +94,13 @@ public class DB {
     }
 
 
-    public static void delete_record(int id) {
+    public static void deleteRecord(int id) {
         try (Connection conn = DriverManager.getConnection(url,usr,pwd)) {
             Statement statement = conn.createStatement();
             System.out.println(id);
             String sql = String.format("DELETE from kaf_records WHERE id = %d",id);
             statement.executeUpdate(sql);
-            Kaf_record_storage.get_records();
+            KafRecordFormatter.getRecords();
         }
 
 
@@ -110,6 +110,5 @@ public class DB {
         }
 
     }
-
 
 }

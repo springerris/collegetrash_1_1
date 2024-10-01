@@ -25,15 +25,15 @@ public class Main {
         String option = input.next();
         switch (option) {
             case "1": {
-                Kaf_record_storage.get_records();
-                Kaf_record_storage.show_records();
+                KafRecordFormatter.getRecords();
+                KafRecordFormatter.showRecords();
                 return 1;
 
             }
 
             case "2": {
-                DB.add_to_record();
-                Kaf_record_storage.show_records();
+                DB.addToRecord();
+                KafRecordFormatter.showRecords();
                 return 1;
 
             }
@@ -45,8 +45,8 @@ public class Main {
                     System.out.println("ID должно быть числом");
                     id = input.next();
                 }
-                DB.update_record(Integer.parseInt(id));
-                Kaf_record_storage.show_records();
+                DB.updateRecord(Integer.parseInt(id));
+                KafRecordFormatter.showRecords();
                 return 1;
 
             }
@@ -58,8 +58,8 @@ public class Main {
                     System.out.println("ID должно быть числом");
                     id = input.next();
                     }
-                    DB.delete_record(Integer.parseInt(id));
-                    Kaf_record_storage.show_records();
+                    DB.deleteRecord(Integer.parseInt(id));
+                    KafRecordFormatter.showRecords();
                     return 1;
                 }
 

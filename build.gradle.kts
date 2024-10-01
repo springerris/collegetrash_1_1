@@ -25,6 +25,13 @@ dependencies {
     testImplementation("org.hamcrest:hamcrest:3.0")
 }
 
+// Sets the toolchain version to Java 21, so that we get good error messages
+// when not using 21+.
+tasks.compileJava {
+    sourceCompatibility = "21"
+    targetCompatibility = "21"
+}
+
 // Makes the JAR file produced by Gradle executable,
 // e.g. java -jar lab2.jar
 tasks.jar {
