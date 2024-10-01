@@ -1,4 +1,4 @@
-package com.github.springerris;
+package com.github.springerris.db;
 
 import org.jetbrains.annotations.NotNull;
 

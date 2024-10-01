@@ -1,20 +1,21 @@
 package com.github.springerris;
 
+import com.github.springerris.db.DB;
+import com.github.springerris.db.KafRecordFormatter;
+
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
 
-    public static boolean strIsNum(String str) {
-        if (str.isEmpty()) return false;
-        for (int i = 0; i < str.length(); i++) {
-            if (!Character.isDigit(str.charAt(i))) return false;
+    public static void main(String[] args) throws IOException {
+        int opt = mainMenu();
+        while (opt != 0) {
+            opt = mainMenu();
         }
-        return true;
     }
 
     public static int mainMenu() {
-
         System.out.println("Добро пожаловать в систему управления записями БД кафедры.");
         System.out.println("Введите 1 для показывания записей таблиц.");
         System.out.println("Введите 2 для добавления записи в таблицу.");
@@ -57,11 +58,11 @@ public class Main {
                 while (!strIsNum(id)) {
                     System.out.println("ID должно быть числом");
                     id = input.next();
-                    }
-                    DB.deleteRecord(Integer.parseInt(id));
-                    KafRecordFormatter.showRecords();
-                    return 1;
                 }
+                DB.deleteRecord(Integer.parseInt(id));
+                KafRecordFormatter.showRecords();
+                return 1;
+            }
 
             case "q": {
                 return 0;
@@ -78,11 +79,12 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        int opt = mainMenu();
-        while (opt != 0) {
-            opt = mainMenu();
+    public static boolean strIsNum(String str) {
+        if (str.isEmpty()) return false;
+        for (int i = 0; i < str.length(); i++) {
+            if (!Character.isDigit(str.charAt(i))) return false;
         }
+        return true;
     }
 
 }

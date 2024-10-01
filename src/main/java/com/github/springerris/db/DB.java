@@ -1,4 +1,4 @@
-package com.github.springerris;
+package com.github.springerris.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,26 +15,20 @@ public class DB {
     private static String usr = "";
 
     public static ArrayList<KafRecord> getRecords() {
-        ArrayList<KafRecord> templist = new ArrayList<KafRecord>();
+        ArrayList<KafRecord> templist = new ArrayList<>();
         try (Connection conn = DriverManager.getConnection(url,usr,pwd)) {
             Statement statement = conn.createStatement();
-            String sql = String.format("SELECT id, naz, tel FROM kaf_records");
+            String sql = "SELECT id, naz, tel FROM kaf_records";
             ResultSet rs = statement.executeQuery(sql);
-
 
             while(rs.next()) {
                 int id = rs.getInt("id");
-                String tel = rs.getString("tel") ;
+                String tel = rs.getString("tel");
                 String naz = rs.getString("naz");
                 templist.add(new KafRecord(id,naz,tel));
             }
-
-
-
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-
         }
         return templist;
     }
@@ -56,12 +50,8 @@ public class DB {
             String sql = String.format("INSERT INTO kaf_records(naz, tel) VALUES('%s', '%s')",str1,str2);
             statement.executeUpdate(sql);
             KafRecordFormatter.getRecords();
-        }
-
-
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-
         }
 
     }
@@ -83,12 +73,8 @@ public class DB {
             String sql = String.format("UPDATE kaf_records SET naz = '%s', tel = '%s' WHERE id = %d",str1,str2,id);
             statement.executeUpdate(sql);
             KafRecordFormatter.getRecords();
-        }
-
-
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-
         }
 
     }
@@ -101,14 +87,9 @@ public class DB {
             String sql = String.format("DELETE from kaf_records WHERE id = %d",id);
             statement.executeUpdate(sql);
             KafRecordFormatter.getRecords();
-        }
-
-
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-
         }
-
     }
 
 }
