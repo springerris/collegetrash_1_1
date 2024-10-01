@@ -4,6 +4,7 @@ import com.github.springerris.db.DB;
 import com.github.springerris.db.KafRecordFormatter;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Application implements Runnable {
@@ -20,11 +21,16 @@ public class Application implements Runnable {
 
     @Override
     public void run() {
-        int opt = this.mainMenu();
-        while (opt != 0) opt = this.mainMenu();
+        try {
+            int opt = this.mainMenu();
+            while (opt != 0) opt = this.mainMenu();
+        } catch (SQLException e) {
+            //noinspection CallToPrintStackTrace
+            e.printStackTrace();
+        }
     }
 
-    public int mainMenu() {
+    public int mainMenu() throws SQLException {
         System.out.println("Добро пожаловать в систему управления записями БД кафедры.");
         System.out.println("Введите 1 для показывания записей таблиц.");
         System.out.println("Введите 2 для добавления записи в таблицу.");
@@ -33,7 +39,7 @@ public class Application implements Runnable {
         System.out.println("Введите q для выхода.");
 
         String option = this.scanner.next();
-        return switch (option.isEmpty() ? ' ' : option.charAt(0)) {
+        return switch (option.length() != 1 ? ' ' : option.charAt(0)) {
             case '1' -> this.option1();
             case '2' -> this.option2();
             case '3' -> this.option3();
@@ -43,40 +49,68 @@ public class Application implements Runnable {
         };
     }
 
-    private int option1() {
-        KafRecordFormatter.getRecords();
-        KafRecordFormatter.showRecords();
+    private int option1() throws SQLException {
+        this.populateAndPrint();
         return 1;
     }
 
-    private int option2() {
-        DB.addToRecord();
-        KafRecordFormatter.showRecords();
+    private int option2() throws SQLException {
+        System.out.println("Введите название кафедры");
+        String str1 = this.scanner.next();
+        System.out.println("Введите номер телефона кафедры");
+        System.out.println("Телефон должен содержать 11 цифр без пробелов");
+        String str2 = this.scanner.next();
+        while (str2.length() != 11) {
+            System.out.println("Телефон должен содержать 11 цифр без пробелов");
+            str2 = this.scanner.next();
+        }
+
+        this.db.addRecord(str1, str2);
+        this.populateAndPrint();
         return 1;
     }
 
-    private int option3() {
+    private int option3() throws SQLException {
         System.out.println("Введите ID для обновления");
+
         String tmp = this.scanner.next();
         while (stringIsNotNumber(tmp)) {
             System.out.println("ID должно быть числом");
             tmp = this.scanner.next();
         }
-        DB.updateRecord(Integer.parseInt(tmp));
-        KafRecordFormatter.showRecords();
+        int id = Integer.parseInt(tmp);
+
+        System.out.println("Введите название кафедры");
+        String str1 = this.scanner.next();
+        System.out.println("Введите номер телефона кафедры");
+        System.out.println("Телефон должен содержать 11 цифр без пробелов");
+        String str2 = this.scanner.next();
+        while (str2.length() != 11) {
+            System.out.println("Телефон должен содержать 11 цифр без пробелов");
+            str2 = this.scanner.next();
+        }
+
+        this.db.updateRecord(id, str1, str2);
+        this.populateAndPrint();
         return 1;
     }
 
-    private int option4() {
+    private int option4() throws SQLException {
         System.out.println("Введите ID для удаления");
         String id = this.scanner.next();
         while (stringIsNotNumber(id)) {
             System.out.println("ID должно быть числом");
             id = this.scanner.next();
         }
-        DB.deleteRecord(Integer.parseInt(id));
-        KafRecordFormatter.showRecords();
+
+        this.db.deleteRecord(Integer.parseInt(id));
+        this.populateAndPrint();
         return 1;
+    }
+
+    private void populateAndPrint() throws SQLException {
+        this.formatter.populate(this.db);
+        System.out.print(this.formatter.format());
     }
 
     private boolean stringIsNotNumber(String str) {

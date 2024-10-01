@@ -1,39 +1,51 @@
 package com.github.springerris.db;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class KafRecordFormatter {
 
-    public static ArrayList<KafRecord> list = new ArrayList<>();
+    private final List<KafRecord> list = new ArrayList<>();
 
-    public static void getRecords() {
-        list.clear();
-        list = DB.getRecords();
+    // Replacement for getRecords
+    public void populate(@NotNull DB db) throws SQLException {
+        this.list.clear();
+        this.list.addAll(db.getRecords());
     }
 
-    public static void showRecords() {
-        System.out.println("╔════╦══════════════════════════════╦════════════════╗");
-        System.out.println("| ID | Название кафедры             | Номер телефона |");
-        System.out.println("╚════╩══════════════════════════════╩════════════════╝");
-        String str;
-        for (KafRecord kafRecord : list) {
-            String lenst = String.valueOf(kafRecord.id());
-            str = "| " + lenst;
-            System.out.print(str);
-            printEmpty(3 - lenst.length());
-            str = "| " + kafRecord.naz();
-            System.out.print(str);
-            printEmpty(29 - kafRecord.naz().length());
-            str = "| " + kafRecord.tel();
-            System.out.print(str);
-            printEmpty(15 - kafRecord.tel().length());
-            System.out.println("|");
-            System.out.println("╚════╩══════════════════════════════╩════════════════╝");
+    // Replacement for showRecords
+    public @NotNull String format() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("╔════╦══════════════════════════════╦════════════════╗");
+        sb.append("| ID | Название кафедры             | Номер телефона |");
+        sb.append("╚════╩══════════════════════════════╩════════════════╝");
+
+        String tmp;
+        for (KafRecord record : this.list) {
+            tmp = String.valueOf(record.id());
+            sb.append("| ").append(tmp);
+            this.writeEmpty(3 - tmp.length(), sb);
+
+            sb.append("| ").append(record.naz());
+            this.writeEmpty(29 - record.naz().length(), sb);
+
+            sb.append("| ").append(record.tel());
+            this.writeEmpty(15 - record.tel().length(), sb);
+
+            sb.append("|\n╚════╩══════════════════════════════╩════════════════╝\n");
         }
+
+        return sb.toString();
     }
 
-    public static void printEmpty(int cnt) {
-        for (int i=0; i < cnt; i++) System.out.print(' ');
+    private void writeEmpty(int count, @NotNull StringBuilder sb) {
+        final int len = sb.length();
+        final int newLen = len + count;
+        sb.setLength(newLen);
+        for (int i=len; i < newLen; i++) sb.setCharAt(i, ' ');
     }
 
 }
