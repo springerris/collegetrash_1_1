@@ -1,3 +1,5 @@
+package com.github.springerris;
+
 import java.util.ArrayList;
 
 public class Kaf_record_storage {

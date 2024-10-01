@@ -1,3 +1,5 @@
+package com.github.springerris;
+
 public class kaf_record {
     public int id;
     public String naz;

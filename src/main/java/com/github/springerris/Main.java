@@ -1,8 +1,10 @@
+package com.github.springerris;
+
 import java.io.IOException;
-import java.rmi.AccessException;
 import java.util.Scanner;
 
 public class Main {
+
     public static boolean strIsNum(String str) {
         if (str.isEmpty()) return false;
         for (int i = 0; i < str.length(); i++) {
