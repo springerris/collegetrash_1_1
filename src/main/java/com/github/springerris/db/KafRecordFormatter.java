@@ -19,9 +19,9 @@ public class KafRecordFormatter {
     // Replacement for showRecords
     public @NotNull String format() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("╔════╦══════════════════════════════╦════════════════╗");
-        sb.append("| ID | Название кафедры             | Номер телефона |");
-        sb.append("╚════╩══════════════════════════════╩════════════════╝");
+        sb.append("╔════╦══════════════════════════════╦════════════════╗\n");
+        sb.append("| ID | Название кафедры             | Номер телефона |\n");
+        sb.append("╚════╩══════════════════════════════╩════════════════╝\n");
 
         String tmp;
         for (KafRecord record : this.list) {
