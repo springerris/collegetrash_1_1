@@ -2,7 +2,6 @@ package com.github.springerris.config;
 
 import org.jetbrains.annotations.NotNull;
 
-import javax.print.attribute.URISyntax;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
