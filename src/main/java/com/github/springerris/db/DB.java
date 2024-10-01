@@ -9,18 +9,35 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class DB {
 
     protected final String url;
     protected final String usr;
     protected final String pwd;
+    protected transient Connection connection = null;
 
     public DB(@NotNull String url, @NotNull String username, @NotNull String passphrase) {
         this.url = url;
         this.usr = username;
         this.pwd = passphrase;
+    }
+
+    // Lazily provides a Connection; these are meant to be reused!
+    protected @NotNull Connection getConnection() throws SQLException {
+        if (this.connection != null) {
+            if (!this.connection.isClosed()) return this.connection;
+        }
+        return this.connection = DriverManager.getConnection(this.url, this.usr, this.pwd);
+    }
+
+    protected @NotNull Statement createStatement() throws SQLException {
+        return this.getConnection().createStatement();
+    }
+
+    public synchronized void close() throws SQLException {
+        if (this.connection != null && !this.connection.isClosed())
+            this.connection.close();
     }
 
     // Note 1
@@ -35,8 +52,7 @@ public class DB {
 
     public @NotNull List<KafRecord> getRecords() throws SQLException {
         List<KafRecord> ret = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(url,usr,pwd)) {
-            Statement statement = conn.createStatement();
+        try (Statement statement = this.createStatement()) {
             ResultSet rs = statement.executeQuery("SELECT id, naz, tel FROM kaf_records");
 
             while(rs.next()) {
@@ -54,8 +70,7 @@ public class DB {
     // handle that, and pass exclusively sanitized output to DB.
 
     public void addRecord(@NotNull String naz, @NotNull String tel) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(url,usr,pwd)) {
-            Statement statement = conn.createStatement();
+        try (Statement statement = this.createStatement()) {
             statement.executeUpdate(
                     "INSERT INTO kaf_records(naz, tel) VALUES('" +
                             naz + "', '" + tel + "')"
@@ -67,24 +82,8 @@ public class DB {
         this.addRecord(record.naz(), record.tel());
     }
 
-    @Deprecated
-    public void addToRecord() throws SQLException {
-        Scanner input = new Scanner(System.in);
-        System.out.println("Введите название кафедры");
-        String str1 = input.next();
-        System.out.println("Введите номер телефона кафедры");
-        System.out.println("Телефон должен содержать 11 цифр без пробелов");
-        String str2 = input.next();
-        while (str2.length() != 11) {
-            System.out.println("Телефон должен содержать 11 цифр без пробелов");
-            str2 = input.next();
-        }
-        this.addRecord(str1, str2);
-    }
-
     public void updateRecord(int id, @NotNull String naz, @NotNull String tel) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(url,usr,pwd)) {
-            Statement statement = conn.createStatement();
+        try (Statement statement = this.createStatement()) {
             statement.executeUpdate(
                     "UPDATE kaf_records SET naz = '" +
                     naz + "', tel = '" + tel + "' WHERE id = " + id
@@ -96,24 +95,8 @@ public class DB {
         this.updateRecord(record.id(), record.naz(), record.tel());
     }
 
-    @Deprecated
-    public void updateRecord(int id) throws SQLException {
-        Scanner input = new Scanner(System.in);
-        System.out.println("Введите название кафедры");
-        String str1 = input.next();
-        System.out.println("Введите номер телефона кафедры");
-        System.out.println("Телефон должен содержать 11 цифр без пробелов");
-        String str2 = input.next();
-        while (str2.length() != 11) {
-            System.out.println("Телефон должен содержать 11 цифр без пробелов");
-            str2 = input.next();
-        }
-        this.updateRecord(id, str1, str2);
-    }
-
     public void deleteRecord(int id) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(url,usr,pwd)) {
-            Statement statement = conn.createStatement();
+        try (Statement statement = this.createStatement()) {
             statement.executeUpdate("DELETE from kaf_records WHERE id = " + id);
         }
     }

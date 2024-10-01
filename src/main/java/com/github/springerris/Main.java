@@ -3,6 +3,8 @@ package com.github.springerris;
 import com.github.springerris.db.DB;
 import com.github.springerris.db.KafRecordFormatter;
 
+import java.sql.SQLException;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -18,7 +20,16 @@ public class Main {
 
         // Launch!
         final Application app = new Application(db, formatter);
-        app.run();
+        try {
+            app.run();
+        } finally {
+            try {
+                db.close();
+            } catch (SQLException e) {
+                //noinspection CallToPrintStackTrace
+                e.printStackTrace();
+            }
+        }
     }
 
 }
