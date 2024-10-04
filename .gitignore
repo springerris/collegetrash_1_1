@@ -31,3 +31,7 @@ bin/
 *.odt#
 *.odt
 *.pdf
+
+### Gradle ###
+.gradle/
+build/
