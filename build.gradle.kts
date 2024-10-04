@@ -17,23 +17,18 @@ dependencies {
     // JetBrains IDE Annotations
     compileOnly("org.jetbrains:annotations:25.0.0")
 
-    // These seem unused, but were present in the original .iml
-    // They'll be used if you ever add JUnit tests, though explicitly
-    // requiring hamcrest is not necessary at all.
+    // Unit Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.11.1")
     testImplementation("org.hamcrest:hamcrest:3.0")
 }
 
-// Sets the toolchain version to Java 21, so that we get good error messages
-// when not using 21+.
 tasks.compileJava {
     sourceCompatibility = "21"
     targetCompatibility = "21"
 }
 
-// Makes the JAR file produced by Gradle executable,
-// e.g. java -jar lab2.jar
+// Makes the JAR file produced by Gradle executable
 tasks.jar {
     manifest {
         attributes(

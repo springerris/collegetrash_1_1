@@ -9,9 +9,6 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Doesn't implement the full INI specification, just a quick lazy parser for this project.
- */
 public class ConfigReader implements Closeable {
 
     private static final Pattern PATTERN_SECTION = Pattern.compile(

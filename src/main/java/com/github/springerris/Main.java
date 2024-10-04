@@ -18,9 +18,6 @@ import java.util.Objects;
 public class Main {
 
     public static void main(String[] args) {
-        // Here we process args, setup state for the application, and launch it.
-        // The Application implements Runnable in case we want to ever pass it to a Thread,
-        // as Runnable can be an argument to the Thread constructor.
         final String[] dbParams = new String[] {
                 // url
                 "jdbc:mysql://127.0.0.1/",

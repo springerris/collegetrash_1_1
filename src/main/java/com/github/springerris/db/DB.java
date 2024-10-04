@@ -23,7 +23,6 @@ public class DB {
         this.pwd = passphrase;
     }
 
-    // Lazily provides a Connection; these are meant to be reused!
     protected @NotNull Connection getConnection() throws SQLException {
         if (this.connection != null) {
             if (!this.connection.isClosed()) return this.connection;
@@ -40,16 +39,6 @@ public class DB {
             this.connection.close();
     }
 
-    // Note 1
-    // ArrayList is not vital to the contract of the method.
-    // Callers will only use methods defined on ArrayList that are also defined on List,
-    // an interface. Updating the contract to return List allows for more flexibility.
-
-    // Note 2
-    // Catching SQLException silently is generally a bad idea. Let it bubble up and halt execution,
-    // otherwise we are serving bad data. Imagine we receive an incomplete list, update it, and
-    // write that list to the database. That's data loss!
-
     public @NotNull List<KafRecord> getRecords() throws SQLException {
         List<KafRecord> ret = new ArrayList<>();
         try (Statement statement = this.createStatement()) {
@@ -64,10 +53,6 @@ public class DB {
         }
         return ret;
     }
-
-    // Note 3
-    // Handling user interface is out of scope for this class. We should let other classes
-    // handle that, and pass exclusively sanitized output to DB.
 
     public void addRecord(@NotNull String naz, @NotNull String tel) throws SQLException {
         try (Statement statement = this.createStatement()) {
